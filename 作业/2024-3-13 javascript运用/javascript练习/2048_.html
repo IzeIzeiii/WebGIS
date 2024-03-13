@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2048</title>
+  <!-- <script src="./2048.js"></script> -->
+  <style>
+    .btnGroup{
+      width: 150px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .btnGroup button{
+      width: 50px;
+      height: 50px;
+      margin: 0;
+      padding: 0;
+    }
+    .btnGroup #up{
+      margin-left: 50px;
+      margin-right: 50px;
+    }
+    .box{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <audio src="https://webfs.hw.kugou.com/202311131637/678484d6605c880f4def32372a95e708/v2/6e1986632da3fef9d4dd19242d93d7c8/G200/M01/17/13/qJQEAF5ci-CAepwjACSesLRjZs4083.mp3"></audio>
+  <div style="text-align: center;">
+    <h1 id="score">分数：0</h1>
+    <button onclick="start()">开始游戏</button>
+  </div>
+  <div class="box">
+    <canvas id="canvas"></canvas>
+    <span class="btnGroup">
+      <button class="direction" id="up">↑</button>
+      <button class="direction" id="left">←</button>
+      <button class="direction" id="down">↓</button>
+      <button class="direction" id="right">→</button>
+    </span>
+  </div>
+</body>
+<script>
+  /**
+ * 2048游戏
+ * 方块参数{x：x轴坐标,y：y轴坐标,color：方块颜色,step：方块合成次数,num：方块值,dx：绘制x轴,dy：绘制y轴，duration：动画持续时间，direction：运动的轴};
+ */
+class Game {
+  constructor() {
+    this.config = {
+      bg: "#ccc",
+      border: "1px solid #e3e3e3",
+      width: 100,
+      boxNum: 4,
+      dom: {
+        cvs: document.querySelector("#canvas"),
+        ctx: document.querySelector("#canvas").getContext("2d"),
+      },
+      box: {},
+    };
+    this.maxScore =
+      this.config.boxNum *
+      this.config.boxNum *
+      (this.config.boxNum *
+        this.config.boxNum *
+        this.config.boxNum *
+        this.config.boxNum *
+        this.config.boxNum *
+        this.config.boxNum *
+        (this.config.boxNum / 2));
+    this.score = 0;
+    this.boxArr = [];
+    this.color = [];
+    this.time = 32;
+    this.isActive = false;
+    this.requestAFId = "";
+    this.init();
+  }
+  init = () => {
+    const { dom, width, boxNum, border } = this.config;
+    const size = width * boxNum + boxNum * (boxNum - 1);
+    dom.ctx.clearRect(0, 0, size, size);
+    dom.cvs.width = size;
+    dom.cvs.height = size;
+    dom.cvs.style.border = border;
+    this.boxArr = this.getBox();
+    this.getBoxColor();
+    this.draw();
+    this.addEvent();
+  };
+  draw = () => {
+    const { width, boxNum, dom } = this.config;
+    const size = width * boxNum + boxNum * (boxNum - 1);
+    dom.ctx.clearRect(0, 0, size, size);
+    for (let i = 0; i < this.boxArr.length; i++) {
+      const item = this.boxArr[i];
+      this.drawBox(
+        item.dx + item.x * boxNum,
+        item.dy + item.y * boxNum,
+        this.color[item.step] ? this.color[item.step] : "#e3e3e3",
+        item.num
+      );
+    }
+  };
+  // 移动过渡动画
+  transition = () => {
+    if (this.isActive) {
+      return
+    }
+    this.isActive = true;
+    const { width, boxNum } = this.config;
+    const MaxNum = (boxNum - 1) * width;
+    for (let i = 0; i < this.boxArr.length; i++) {
+      const item = this.boxArr[i];
+      // 判断方向
+      if (item.x * width !== item.dx) {
+        item.direction = "x";
+        item.duration = (item.x * width - item.dx) / this.time;
+      } else if (item.y * width !== item.dy) {
+        item.direction = "y";
+        item.duration = (item.y * width - item.dy) / this.time;
+      }
+    }
+ 
+    const checkD = () => {
+      let d = false;
+      for (let i = 0; i < this.boxArr.length; i++) {
+        const item = this.boxArr[i];
+        if (item.direction && item[item.direction] * width !== item[`d${item.direction}`]) {
+          d = false;
+          break;
+        } else {
+          d = true;
+        }
+      }
+      return d;
+    };
+    /**
+     * 每次移动一像素需要在time规定的时间内完成移动绘制
+     */
+    let is = false;
+    const start = () => {
+      for (let i = 0; i < this.boxArr.length; i++) {
+        const item = this.boxArr[i];
+ 
+        if (checkD()) {
+          is = true;
+          break;
+        }
+        if (item[`d${item.direction}`] === item[item.direction] * width) {
+          item.duration = 0;
+          continue;
+        }
+        if (item.duration > 0 || item.duration < 0) {
+          item[`d${item.direction}`] += item.duration;
+          if (item[`d${item.direction}`] >= MaxNum) {
+            item[`d${item.direction}`] = MaxNum;
+            item.duration = 0;
+          } else if (item[`d${item.direction}`] <= 0) {
+            item[`d${item.direction}`] = 0;
+            item.duration = 0;
+          }
+        }
+      }
+      this.draw();
+      if (!is) {
+        this.requestAFId = requestAnimationFrame(start);
+      } else {
+        cancelAnimationFrame(this.requestAFId);
+        this.requestAFId = "";
+        this.isActive = false;
+        this.getRamdomBox();
+      }
+    };
+    start();
+  };
+  // 获取对应数值的色块
+  getBoxColor = () => {
+    const num = this.config.boxNum * this.config.boxNum * 2;
+    for (let i = 0; i < num; i++) {}
+  };
+  // 查找item下标
+  findItemIndex = (x, y) => {
+    const index = this.boxArr.findIndex((item) => item.x === x && item.y === y);
+    return index;
+  };
+  // 查找BoxItem
+  findItem = (x, y) => {
+    const item = this.boxArr.find((item) => item.x === x && item.y === y);
+    return item;
+  };
+  // 分组
+  group = (arr, direction = "y") => {
+    const group = {};
+    const keys = direction === "x" ? ["x", "y"] : ["y", "x"];
+ 
+    for (const item of arr) {
+      const key = item[keys[0]];
+      if (!group[key]) {
+        group[key] = {};
+      }
+      group[key][item[keys[1]]] = item;
+    }
+    const arrs = Object.values(group).map((item) => {
+      item = Object.values(item);
+      return item;
+    });
+    return arrs;
+  };
+  // 判断移动
+  /**
+   * 分组是按照x,y进行分组
+   */
+  isCanMove = (arr, direction, isWhere) => {
+    const { width, boxNum } = this.config;
+    const groupArr = arr;
+    if (direction === "right" || direction === "down") {
+      for (let i = 0; i < groupArr.length; i++) {
+        groupArr[i] = groupArr[i].reverse();
+      }
+    }
+    const boundaryNum =
+      direction === "right" || direction === "down" ? boxNum - 1 : 0; // 根据方向判断边界值
+    for (let i = 0; i < groupArr.length; i++) {
+      const itemArr = groupArr[i];
+      for (let j = 0; j < itemArr.length; j++) {
+        let item = itemArr[j];
+        let prevItem = itemArr[j - 1];
+ 
+        switch (direction) {
+          case "left":
+            if (j === 0) {
+              if (item.x <= boundaryNum) continue;
+              else {
+                item.x = boundaryNum;
+              }
+            } else {
+              if (prevItem.num === item.num) {
+                prevItem.num += prevItem.num;
+                prevItem.step++;
+                itemArr.splice(j, 1);
+                j--;
+                this.score += prevItem.num / 2;
+              }
+              item.x = prevItem.x + 1;
+            }
+            break;
+          case "right":
+            if (j === 0) {
+              if (item.x >= boundaryNum) continue;
+              else {
+                item.x = boundaryNum;
+              }
+            } else {
+              if (prevItem.num === item.num) {
+                prevItem.num += prevItem.num;
+                prevItem.step++;
+                itemArr.splice(j, 1);
+                j--;
+                this.score += prevItem.num / 2;
+              }
+              item.x = prevItem.x - 1;
+            }
+            break;
+          case "up":
+            if (j === 0) {
+              if (item.y <= boundaryNum) continue;
+              else {
+                item.y = boundaryNum;
+              }
+            } else {
+              if (prevItem.num === item.num) {
+                prevItem.num += prevItem.num;
+                prevItem.step++;
+                itemArr.splice(j, 1);
+                j--;
+                this.score += prevItem.num / 2;
+              }
+              item.y = prevItem.y + 1;
+            }
+            break;
+          case "down":
+            if (j === 0) {
+              if (item.y >= boundaryNum) continue;
+              else {
+                item.y = boundaryNum;
+              }
+            } else {
+              if (prevItem.num === item.num) {
+                prevItem.num += prevItem.num;
+                prevItem.step++;
+                itemArr.splice(j, 1);
+                j--;
+                this.score += prevItem.num / 2;
+              }
+              item.y = prevItem.y - 1;
+            }
+            break;
+        }
+      }
+    }
+ 
+    return groupArr;
+  };
+  // 移动方块
+  move = (e) => {
+    // type : up right down left
+    const type = e.srcElement.id;
+    const isWhere = type == "up" || type == "down" ? "x" : "y";
+    const groupArr = this.isCanMove(
+      this.group(this.boxArr, isWhere),
+      type,
+      isWhere == "x" ? "y" : "x"
+    );
+    this.boxArr = groupArr.flat(1);
+    this.transition();
+    
+    this.drawScore();
+  };
+ 
+  // 添加事件
+  addEvent = () => {
+    const buttonArr = document.querySelectorAll(".direction");
+    for (let i = 0; i < buttonArr.length; i++) {
+      buttonArr[i].addEventListener("click", this.move);
+    }
+  };
+  // 生成方块对应的颜色
+  getBoxColor = () => {
+    const step = this.config.boxNum * this.config.boxNum;
+    for (let i = 0; i < step; i++) {
+      const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+      this.color.push(color);
+    }
+  };
+  // 合成后生成随机方块
+  ramdomBox = () => {
+    const { width, boxNum } = this.config;
+    const x = Math.floor(Math.random() * boxNum);
+    const y = Math.floor(Math.random() * boxNum);
+    if (this.findItem(x, y)) {
+      this.ramdomBox();
+      return;
+    } else {
+      const obj = {
+        x,
+        y,
+        color: "#e3e3e3",
+        step: 0,
+        num: 2,
+        dx: x * width,
+        dy: y * width,
+      };
+      this.boxArr.push(obj);
+    }
+  };
+  // 获取随机方块
+  getRamdomBox = () => {
+    const MaxBox = this.config.boxNum * this.config.boxNum;
+    if (this.boxArr.length >= MaxBox) {
+      alert(`游戏结束!!!分数${this.score}`);
+      this.re();
+      return;
+    }
+    const num =
+      MaxBox - this.boxArr.length >= 2 ? 2 : MaxBox - this.boxArr.length;
+    for (let i = 0; i < num; i++) {
+      this.ramdomBox();
+    }
+    this.draw();
+  };
+  // 获取初始方块
+  getBox = () => {
+    const { width, boxNum } = this.config;
+    const boxArr = [];
+    const num = 2;
+    for (let i = 0; i < num; i++) {
+      let x = Math.floor(Math.random() * boxNum);
+      let y = Math.floor(Math.random() * boxNum);
+      const color = "#e3e3e3";
+      const obj = {
+        x,
+        y,
+        color,
+        step: 0,
+        num: 2,
+        dx: width * x,
+        dy: width * y,
+        duration: 0,
+        direction: "",
+      };
+      const is = boxArr.find((item) => item.x === x && item.y === y);
+      if (!is) {
+        boxArr.push(obj);
+      } else {
+        x = x - 1 > 0 ? x - 1 : x + 1 < boxNum ? x + 1 : 0;
+        y = y - 1 > 0 ? y - 1 : y + 1 < boxNum ? y + 1 : 0;
+        obj.x = x;
+        obj.y = y;
+        obj.dx = width * x;
+        obj.dy = width * y;
+        boxArr.push(obj);
+      }
+    }
+    return boxArr;
+  };
+  // 绘制分数
+  drawScore = () => {
+    const scoreDom = document.querySelector("#score");
+    scoreDom.innerHTML = `分数：${this.score}`;
+    return true;
+  };
+  drawBox = (x = 0, y = 0, color = "#000000", num = 2) => {
+    const {
+      dom: { ctx },
+      width,
+    } = this.config;
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, width, width);
+    ctx.font = `${width / 3}px 微软雅黑`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#000000";
+    ctx.fillText(num, x + width / 2, y + width / 2);
+    ctx.closePath();
+  };
+  // 清除这个class
+  re = () => {
+    const buttonArr = document.querySelectorAll(".direction");
+    for (let i = 0; i < buttonArr.length; i++) {
+      buttonArr[i].removeEventListener("click", this.move);
+    }
+ 
+    this.config = null;
+    this.score = 0;
+  };
+}
+let game;
+function start() {
+  if (game) {
+    game.re();
+    game = "";
+  }
+  game = new Game();
+}
+window.onload = () => {
+  game = new Game();
+  // 创建视频标签
+  const audio = document.querySelector("audio");
+  let eventArr = {
+    w: "up",
+    s: "down",
+    d: "right",
+    a: "left",
+    W: "up",
+    S: "down",
+    D: "right",
+    A: "left",
+    ArrowDown: "down",
+    ArrowUp: "up",
+    ArrowRight: "right",
+    ArrowLeft: "left",
+  };
+  document.onkeydown = (e) => {
+    if (e.key in eventArr) {
+      document.getElementById(eventArr[e.key]).click();
+    }
+  };
+  document.body.addEventListener("click", () => {
+    audio.play()
+  });
+};
+</script>
+</html>
