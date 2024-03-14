@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<head>
+<script src="vue.js"></script>
+</head>
+<body>
+<div id="inputBox">
+    <div v-for="item in arr" :key="item">
+        {{item}}:<input type="text">
+    </div>
+</div>
+
+</div>
+<div id="tb">
+    <table id="table" border="1" 
+    cellspacing="0">
+        <tr>
+            <th class="fix">编号</th>
+            <th class="fix">姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>成绩</th>
+            <th>等级</th>
+            <th>备注</th>
+        </tr>
+        <tr align="center" v-for="(item,index) in users" :key="index">
+            <td class="fix">{{index}}</td>
+            <td class="fix">{{item.name}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.gender==1?'男':'女'}}</td>
+            <td>{{item.score}}</td>
+            <td>{{item.score<0?'成绩错误':
+                item.score<60?'不及格':
+                item.score<70?'及格':
+                item.score<80?'中等':
+                item.score<90?'良好':
+                item.score<=100?'优秀':'成绩错误'
+            }}</td>
+            <td @click="canEdit"></td>
+        </tr>
+    </table>
+</div>
+</body>
+<script>
+inputBox=new Vue({
+    el:'#inputBox',
+    data:{
+        arr:[1,2,3,4,5]
+    },
+    
+});
+
+tb=new Vue({
+    el:'#tb',
+    data:{
+        users:[{
+                name:"Tom",
+                age:20,
+                gender:1,
+                score:78
+            },{
+                name:"Rose",
+                age:18,
+                gender:2,
+                score:86
+            },{
+                name:"Jerry",
+                age:26,
+                gender:1,
+                score:90
+            },{
+                name:"Tony",
+                age:30,
+                gender:2,
+                score:52
+            }]
+    },
+    method:{
+        canEdit:function(){
+
+        }
+    }
+});
+
+</script>
+
+<style>
+#table{
+    width: 80%
+}
+
+.fix{
+    width: 200px
+}
+
+
+</style>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<script src="vue.js"></script>
+</head>
+<body>
+	<div id="app">
+		{{message}}
+		<p :class="{green:hhcolor,size:hhsize}">{{haha}}</p>
+	</div>
+	<div class="cls">
+		<p :class="color">{{b}}</p>
+		<p v-html="bb" @click="click2048"></p>
+		<p>{{b<10?'b<10':'b>=10'}}</p>
+	</div>
+</body>
+<script>
+	var app=new Vue({
+		el:'#app',
+		data:{
+			message:'Hello Vue!',
+			haha:'hoho',
+			hhcolor:true,
+			hhsize:true
+		}
+	});
+	var cls=new Vue({
+		el:'.cls',
+		data:{
+			b:114514,
+			bb:'<img src="../../../2024-3-13 javascript运用/javascript练习/img/2048.bmp"/>',
+			color:'green'
+		},
+		methods:{
+			click2048:function(){
+				this.bb='<img src="../../../2024-3-13 javascript运用/javascript练习/img/1024.bmp"/>'
+			}
+		}
+	})
+	app.$watch('haha',function(newv,oldv)
+		{app.$data.message=oldv+' to '+newv;});
+	app.$data.haha='xixi';
+	cls.$data.b=12138;
+</script>
+<style>
+.aqua{
+	color:aqua;
+}
+.green{
+	color:aquamarine;
+}
+.size{
+	font-size: 20px;
+}
+</style>
+</html>
