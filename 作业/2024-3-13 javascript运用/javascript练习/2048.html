@@ -4,21 +4,77 @@
     <meta charset="utf-8">
 </head>
 <body>
-    <div>
-        <canvas id="canvas"></canvas>
+    <button onclick="createGameArea()">start</button>
+    <div id="gameArea">
+        
     </div>
 </body>
 </html>
 
 <script>
 
-class Game{
-    constructor(){
-        this.block={
-            size:100,
+var areaSize=4;
+var blockArr=[];
+function createGameArea(){
+    document.getElementById('gameArea').innerHTML='';
+    let table = document.createElement('table');
+    let tbody = document.createElement('tbody');
+    for(let i=0;i<areaSize;++i){
+        let tr=document.createElement('tr');
+        blockArr[i]=[];
+        for(let j=0;j<areaSize;++j){
+            let td=document.createElement('td');
+            let img=document.createElement('img');
+            img.setAttribute('src','img/0.bmp');
+            blockArr[i][j]=img;
+            td.appendChild(img);
+            tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+    document.getElementById('gameArea').appendChild(table);
+
+    addBlock();
+}
+
+function getBlockNum(r,c){
+    return blockArr[r][c].getAttribute('src').match(/\d+/)[0];
+}
+
+function setBlockNum(r,c,num){
+    blockArr[r][c].setAttribute('src',`img/${num}.bmp`);
+}
+
+function blockNull(r,c){
+    return blockArr[r][c].getAttribute('src').charAt(4)=='0';
+}
+
+function cntNull(){
+    let n=0;
+    for(let i=0;i<areaSize;++i){
+        for(let j=0;j<areaSize;++j){
+            if(blockNull(i,j)) ++n;
+        }
+    }
+    return n;
+}
+
+function addBlock(){
+    let cntn=cntNull();
+    if(cntn==0) return false;
+    let n=Math.floor(Math.random()*cntn);
+
+    for(let i=0;i<areaSize;++i){
+        for(let j=0;j<areaSize;++j){
+            if(getBlockNum(i,j)==0&&n--==0){
+                setBlockNum(i,j,Math.random()<0.08?4:2);
+                return true;
+            }
         }
     }
 }
+
 
 </script>
 
