@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<script src="vue.js"></script>
+	<script src="node_modules\axios\dist\axios.js"></script>
 </head>
 <body>
 	<div id="app">
@@ -43,6 +46,13 @@
 		{app.$data.message=oldv+' to '+newv;});
 	app.$data.haha='xixi';
 	cls.$data.b=12138;
+	axios.get("https://apis.netstart.cn/xpc/home/selection").then((res)=>{
+		console.log(res);
+	});
+
+	axios.post("https://apis.netstart.cn/xpc/home/selection").then((res)=>{
+		console.log(res);
+	});
 </script>
 <style>
 .aqua{

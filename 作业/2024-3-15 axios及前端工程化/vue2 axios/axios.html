@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+    <script src="vue.js"></script>
+    <script src="axios.js"></script>
+</head>
+<body>
+    <div id="tb">
+        <table v-for="(item,index) in msg" :key="index">
+            <tr>
+                <td rowspan="2"><img :src="item.children[0].model.resource.cover"></td>
+                <td class="rtd title">{{item.children[0].model.resource.title}}</td>
+            </tr>
+            <tr>
+                <td class="rtd content"><p class="content-box">{{item.children[0].model.resource.content}}</p></td>
+            </tr>
+        </table>
+    </div>
+</body>
+<script>
+let tb=new Vue({
+    el:"#tb",
+    data:{
+        msg:[]
+    },
+    mounted:function(){
+        axios.get("https://apis.netstart.cn/xpc/home/vmovier")
+            .then(res=>{this.msg=res.data.data.children;console.log(res.data.data.children)});
+    }
+})
+</script>
+
+<style>
+img{
+    width: 320px; /* 设置图片宽度 */
+    height: 200px; /* 设置图片高度 */
+    object-fit: cover; /* 截取并覆盖图片 */
+}
+
+table{ 
+/* border-collapse: 0; */
+/* background-color: #cccccc; */
+    border: 3px solid black;
+    border-spacing: 5px; 
+}
+
+.rtd{
+    width: 450px;
+    padding-left: 20px;
+}
+
+.title{
+    font: 25px sans-serif;
+    height: 40px;
+}
+.content{
+    vertical-align: top;
+    border-top: 2px solid black;
+}
+.content-box{
+    color: rgb(11, 112, 78);
+    margin-right: 60px;
+    margin-top: 20px;
+}
+
+p::first-letter {
+  font-size: 1.5em; /* 字体大小 */
+  color: rgb(126, 190, 37); /* 字体颜色 */
+  /* float: left; 让首字母脱离正常文本流 */
+  line-height: 1em; /* 行高 */
+  padding-right: 0.1em; /* 右侧空间 */
+  padding-left: 0.6em;
+  font-weight: bold; /* 字体加粗 */
+  /* text-transform: uppercase; 转换为大写字母 */
+}
+</style>
