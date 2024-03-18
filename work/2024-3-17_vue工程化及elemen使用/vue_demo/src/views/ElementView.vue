@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div class="my-demo">
+      <input type="button" @click="onSubmit" text="onSubmit">
+      <input type="button" @click="onClick" text="onClick">
+    </div>
     <div class="button-demo">
       <el-row>
         <el-button>默认按钮</el-button>
@@ -192,6 +196,9 @@ export default {
     },
     onSubmit() {
       console.log('submit!');
+    },
+    onClick() {
+      this.currentPage4 = 2;
     }
   }
 }
