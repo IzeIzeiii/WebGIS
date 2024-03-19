@@ -24,7 +24,7 @@
       <el-container>
         <el-aside>
           <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
-            background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+            background-color="#548584" text-color="#fff" active-text-color="#ff804b">
             <el-submenu index="1">
               <template slot="title">
                 <i class="el-icon-location"></i>
@@ -58,12 +58,15 @@
           </el-menu>
         </el-aside>
         <el-main>
-          <el-table :data="tableData">
-            <el-table-column prop="item.children[0].model.resource.cover" label="图片" width="180">
+          <el-table :data="tableData" height="100%" stripe >
+            <el-table-column prop="children[0].model.resource.cover" label="图片" width="180">
+              <template slot-scope="scope">
+                <el-image style="width: 160px; height: 90px" :src="scope.row.children[0].model.resource.cover" fit="cover"></el-image>
+              </template>
             </el-table-column>
-            <el-table-column prop="item.children[0].model.resource.title" label="标题" width="180">
+            <el-table-column prop="children[0].model.resource.title" label="标题" width="180">
             </el-table-column>
-            <el-table-column prop="item.children[0].model.resource.content" label="描述">
+            <el-table-column prop="children[0].model.resource.content" label="描述">
             </el-table-column>
           </el-table>
         </el-main>
@@ -141,7 +144,7 @@ body>.el-container {
 }
 
 .el-aside {
-  background-color: rgb(84, 92, 100);
+  background-color: #548584;
   width: 250px !important;
 }
 
