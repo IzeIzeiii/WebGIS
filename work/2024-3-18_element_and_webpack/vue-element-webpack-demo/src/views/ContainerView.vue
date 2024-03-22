@@ -66,7 +66,7 @@
 </template>
 
 <script>
-const axios = require("axios");
+import axios from 'axios';
 import _ from "lodash";
 
 export default {
