@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>添加用户表单</title>
+  </head>
+  <body>
+    <h1>添加用户表单</h1>
+    <form action="/user/add/" method="post">
+      {% csrf_token %}
+      <label for="username">用户名：</label>
+      <input type="text" id="username" name="username" required /><br /><br />
+      <label for="password">密码：</label>
+      <input type="text" id="password" name="password" required /><br /><br />
+      <label for="age">年龄：</label>
+      <input type="text" id="age" name="age" required /><br /><br />
+      <input type="submit" value="提交" />
+    </form>
+  </body>
+</html>

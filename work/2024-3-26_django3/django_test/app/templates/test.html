@@ -1,0 +1,19 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body>
+        <h1>USER_LIST{{arr.5.name}}{{drt}}</h1>
+        {%for i in arr %}
+        <li>{{i}}</li>
+        {%if i == 1 %}
+        {{i}}
+        {%endif%}
+        {%endfor%}
+        <img src="{% static 'img/2.jpg' %}"/>
+    </body>
+</html>

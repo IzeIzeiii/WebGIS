@@ -1,9 +1,12 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
+    <sidebar class="sidebar-container" v-if="$route.path!='/list'"/>
     <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
+      <div :class="{'fixed-header':fixedHeader}" v-if="$route.path=='/list'">
+        <navbar />
+      </div>
+      <div :class="{'fixed-header':fixedHeader}" v-if="$route.path!='/list'">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
@@ -81,6 +84,15 @@ export default {
     height: 100%;
     position: absolute;
     z-index: 999;
+  }
+
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 9;
+    width: calc(100% - #{$sideBarWidth});
+    transition: width 0.28s;
   }
 
   .fixed-header {

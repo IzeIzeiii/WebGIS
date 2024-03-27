@@ -5,7 +5,8 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL:"https://mock.apifox.com/m1/4216628-0-default",
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
