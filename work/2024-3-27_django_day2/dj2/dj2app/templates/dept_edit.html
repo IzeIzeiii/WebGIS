@@ -1,0 +1,10 @@
+{% extends "layout.html" %} {% block content %}
+<h1>编辑部门</h1>
+<form method="post">
+  {% csrf_token %}
+  <h4>原部门名：{{dt.name}}</h4>
+  <label for="name">新部门名：</label>
+  <input type="text" id="name" name="name" required /><br /><br />
+  <input type="submit" value="提交" />
+</form>
+{% endblock %}

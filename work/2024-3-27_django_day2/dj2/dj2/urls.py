@@ -22,5 +22,12 @@ from dj2app import views
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('index/',views.index),
-    path('dept/list/',views.dept_list)
+    path('dept/list/',views.dept_list),
+    path('dept/add/',views.dept_add),
+    path('dept/delete/',views.dept_delete),
+    path('dept/edit/<int:id>/',views.dept_edit),
+    path('emp/list/',views.emp_list),
+    path('emp/add/',views.emp_add),
+    path('emp/delete/',views.emp_delete),
+    path('emp/edit/<int:id>/',views.emp_edit),
 ]

@@ -1,0 +1,78 @@
+{% extends "layout.html" %} {% block content %}
+<h1>员工表格页面</h1>
+<table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>姓名</th>
+      <th>年龄</th>
+      <th>性别</th>
+      <th>薪资</th>
+      <th>所属部门</th>
+      <th>入职时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for e in uarr%}
+    <tr>
+      <td>{{e.id}}</td>
+      <td>{{e.name}}</td>
+      <td>{{e.age}}</td>
+      <td>{{e.get_sex_display}}</td>
+      <td>{{e.salary}}</td>
+      <td>{{e.depart.name}}</td>
+      <td>{{e.hiredate|date:"Y-m-d"}}</td>
+      <td>
+        <a href="/emp/delete/?id={{e.id}}">删除</a>
+        <a href="/emp/edit/{{e.id}}/">修改</a>
+      </td>
+    </tr>
+    {%endfor%}
+    <form id="editForm" method="post">
+      <tr>
+        <td>{{uarr.0.id}}</td>
+        <td><input type="text" id="name" value="{{uarr.0.name}}" /></td>
+        <td><input type="text" id="age" value="{{uarr.0.age}}" /></td>
+        <td>
+          <select id="sex">
+            {%for s in sexarr%}
+            <option value='{{s.0}}' {%if uarr.0.sex == s.0%}selected{%endif%}>{{s.1}}</option>
+            {%endfor%}
+          </select>
+        </td>
+        <td><input type="text" id="salary" value="{{uarr.0.salary}}" /></td>
+        <td>
+          <select id="depart">
+            {%for d in deparr%}
+            <option value='{{d.id}}' {%if uarr.0.depart.id == d.id%}selected{%endif%}>{{d.name}}</option>
+            {%endfor%}
+          </select>
+        </td>
+        <td>{{uarr.0.hiredate|date:"Y-m-d"}}</td>
+        <td>
+          <a href="/emp/delete/?id={{uarr.0.id}}">删除</a>
+          <a href="/emp/edit/{{uarr.0.id}}/">修改</a>
+        </td>
+      </tr>
+    </form>
+  </tbody>
+</table>
+<a href="/emp/add/">添加</a>
+{% endblock %} {% block css %}
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+</style>
+{% endblock %}

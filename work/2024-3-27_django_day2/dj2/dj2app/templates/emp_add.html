@@ -1,0 +1,9 @@
+{% extends "layout.html" %} {% block content %}
+<h1>添加员工</h1>
+<form method="post">
+  {% csrf_token %}
+  <label for="name">员工名：</label>
+  <input type="text" id="name" name="name" required /><br /><br />
+  <input type="submit" value="提交" />
+</form>
+{% endblock %}

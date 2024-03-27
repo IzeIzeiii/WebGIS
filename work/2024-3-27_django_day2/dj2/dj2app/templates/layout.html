@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>首页</title>
+  </head>
+  <body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <!-- Logo -->
+      <a href="#" class="logo">MyLogo</a>
+
+      <!-- 菜单 -->
+      <ul class="menu">
+        {%for u in urls%}
+        <li><a href="{{u}}">{{u}}</a></li>
+        {%endfor%}
+      </ul>
+
+      <!-- 用户信息 -->
+      <div class="user-info">
+        欢迎，<span>用户名</span>
+        <a href="#" class="login-register">登录/注册</a>
+      </div>
+    </nav>
+    {% block content %}{% endblock %}
+  </body>
+</html>
+{% block js %}{% endblock %} {% block css %}{% endblock %}
+<style>
+  /* 基础样式 */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* 导航栏容器 */
+  .navbar {
+    background-color: #333; /* 深灰色背景 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  /* Logo样式 */
+  .logo {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  /* 菜单样式 */
+  .menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+
+  .menu li {
+    margin-left: 20px;
+  }
+
+  .menu a {
+    color: #fff;
+    text-decoration: none;
+  }
+
+  /* 用户信息样式 */
+  .user-info {
+    color: #fff;
+    text-align: right;
+  }
+
+  /* 登录/注册按钮样式 */
+  .login-register {
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #fff;
+    border-radius: 5px;
+  }
+</style>

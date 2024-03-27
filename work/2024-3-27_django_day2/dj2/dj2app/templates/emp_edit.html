@@ -1,0 +1,20 @@
+{% extends "layout.html" %} {% block content %}
+<h1>编辑员工</h1>
+<form method="post">
+  {% csrf_token %}
+  <h4>原员工名：{{dt.name}}</h4>
+  <label for="name">新员工名：</label>
+  <input type="text" id="name" name="name" required /><br /><br />
+  <h4>原员工年龄：{{dt.age}}</h4>
+  <label for="name">新员工年龄：</label>
+  <input type="text" id="name" name="name" required /><br /><br />
+  <h4>原员工薪资：{{dt.name}}</h4>
+  <label for="name">新员工薪资：</label>
+  <h4>原员工性别：{{dt.name}}</h4>
+  <label for="name">新员工性别：</label>
+  <h4>原员工所属部门：{{dt.name}}</h4>
+  <label for="name">新员工薪资：</label>
+  <input type="text" id="name" name="name" required /><br /><br />
+  <input type="submit" value="提交" />
+</form>
+{% endblock %}
